@@ -6,12 +6,19 @@ API_URL = "https://api.api-ninjas.com/v1/animals?name={}"
 
 #new function to get data from api based on user imput
 def fetch_data_from_api(animal_name):
-
+    url = API_URL.format(animal_name)
+    headers = {'X-Api-Key': API_KEY}
+    response = requests.get(url, headers = headers)
+    
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print("Error:", response.status_code, response.text)
 
 #to be deleted
-def load_data(file_path):
-    with open(file_path, "r") as handle:
-        return json.load(handle)
+# def load_data(file_path):
+#     with open(file_path, "r") as handle:
+#         return json.load(handle)
 
 def serialize_animal(animal_obj):
     output = '<li class="cards__item">\n'
@@ -51,7 +58,7 @@ def main():
     template_file_path = "animals_template.html"
     output_file_path = "animals.html"
     
-    animals_data = load_data(json_file_path)
+    animals_data = fetch_data_from_api(animal_name)  #changed function
     
     animals_info = generate_animal_cards(animals_data)
     
